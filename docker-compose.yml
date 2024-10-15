@@ -1,0 +1,55 @@
+version: '3'
+services:
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - "84:80"
+    depends_on:
+      - server
+    deploy:
+      replicas: 2    # Increase replicas for scaling in Swarm mode
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+      restart_policy:
+        condition: on-failure
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "5001:5000"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/employees
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 2    # Increase replicas for scaling
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+      restart_policy:
+        condition: on-failure
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+    deploy:
+      replicas: 1    # Keeping a single replica for the database
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "256M"
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  mongodb_data:

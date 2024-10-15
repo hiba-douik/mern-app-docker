@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb")
-const Db = process.env.ATLAS_URI
+const Db = process.env.MONGODB_URI
 const client = new MongoClient(Db, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -16,6 +16,7 @@ module.exports = {
             
             return callback(null)
         } catch (error) {
+            console.error("Failed to connect to MongoDB:", error)
             return callback(error)
         }
     },

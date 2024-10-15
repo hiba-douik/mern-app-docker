@@ -1,21 +1,17 @@
-const express = require("express")
-const app = express()
-const cors = require("cors")
-require("dotenv").config()
-const port = process.env.PORT || 5000
-app.use(cors())
-app.use(express.json())
-app.use(require("./routes/record"))
-const dbo = require("./db/conn")
+const express = require('express');
+const app = express();
+const cors = require('cors');
+require('dotenv').config(); // If you're using dotenv for environment variables
+const port = process.env.PORT || 5000;
 
-app.get("/", function(req, res) {
-    res.send("App is running")
-})
+// Add this line for debugging
+console.log('MONGODB_URI:', process.env.MONGODB_URI);
 
-dbo.connectToMongoDB(function (error) {
-    if (error) throw error
+app.use(cors());
+app.use(express.json());
 
-    app.listen(port, () => {
-        console.log("Server is running on port: " + port)
-    })
-})
+// Your routes and other middleware here
+
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}`);
+});
